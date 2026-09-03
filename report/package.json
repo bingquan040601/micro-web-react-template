@@ -18,6 +18,8 @@
     "@rspack/dev-server": "^2.2.1",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.5",
+    "less": "^4.9.0",
+    "less-loader": "^13.0.0",
     "typescript": "^7.0.2"
   }
 }

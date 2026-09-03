@@ -29,6 +29,12 @@ export default {
         },
         type: 'javascript/auto',
       },
+      // Less：交给 Rspack 内置 CSS 能力处理（dev 下通过 style 标签注入，支持 HMR）
+      {
+        test: /\.less$/,
+        use: [{ loader: 'less-loader' }],
+        type: 'css',
+      },
     ],
   },
   plugins: [
