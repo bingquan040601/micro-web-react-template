@@ -1,0 +1,41 @@
+.shell {
+  min-height: 100vh;
+
+  .shell-logo {
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 1px;
+  }
+
+  .shell-header {
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
+
+    .shell-header-title {
+      font-size: 16px;
+      font-weight: 600;
+    }
+  }
+
+  .shell-content {
+    padding: 24px;
+  }
+
+  .shell-loading {
+    // 填满内容区并居中（视口 - Header 64px - 内容区上下 padding 48px），
+    // 让 Suspense 占位与首屏占位的视觉中心尽量重合，避免 loading"飘移"
+    height: calc(100vh - 64px - 48px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
