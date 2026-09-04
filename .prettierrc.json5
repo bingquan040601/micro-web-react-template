@@ -1,0 +1,14 @@
+{
+  // 每行最大宽度 100 列（默认 80，放宽以减少不必要的折行）
+  printWidth: 100,
+  // 字符串统一使用单引号
+  singleQuote: true,
+  // 语句末尾始终加分号
+  semi: true,
+  // 多行对象/数组/函数参数保留尾随逗号，增删元素时 diff 更干净
+  trailingComma: 'all',
+  // 箭头函数单参数也保留括号：(x) => x，增删参数时无需改动括号
+  arrowParens: 'always',
+  // 换行符统一 LF：与 .gitattributes、.editorconfig 对齐，规避 Windows autocrlf 签出污染
+  endOfLine: 'lf',
+}

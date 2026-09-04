@@ -1,12 +1,21 @@
+# EditorConfig 顶层配置：root = true 表示不再向上查找父目录的 .editorconfig
 root = true
 
+# 以下规则对所有文件生效
 [*]
+# 文件编码统一为 UTF-8
 charset = utf-8
+# 换行符统一为 LF：与 Prettier endOfLine 及 .gitattributes 对齐，规避 Windows autocrlf 签出污染
 end_of_line = lf
+# 文件末尾保留一个空行（POSIX 惯例，避免 diff 出现 \ No newline 提示）
 insert_final_newline = true
+# 使用空格缩进
 indent_style = space
+# 缩进宽度为 2 个空格，与 Prettier tabWidth 一致
 indent_size = 2
+# 保存时删除行尾空白字符
 trim_trailing_whitespace = true
 
+# Markdown 例外：行尾两个空格在 Markdown 中表示强制换行 <br>，删除会改变渲染语义
 [*.md]
 trim_trailing_whitespace = false

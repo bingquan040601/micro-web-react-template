@@ -1,6 +1,12 @@
+# 依赖目录，无需格式化
 **/node_modules
+# 构建产物目录（rspack build 输出）
 **/dist
+# 锁文件由 npm 生成和维护，格式化会污染 diff
 **/package-lock.json
+# 根目录下的临时/试验目录（不参与 lint/format）
 /repot
+# husky 钩子脚本保持原样
 /.husky
+# 二进制图片文件，Prettier 无法也无需处理
 *.png
