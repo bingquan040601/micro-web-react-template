@@ -35,6 +35,26 @@ npm --prefix host run dev      # :3100（最后启动）
 打开 <http://localhost:3100> 。注意：**改了 rspack.config.mjs 必须重启对应 dev server**，
 dev server 不会监听配置文件变化，否则会报 `Module "./xxx" does not exist in container`。
 
+## 代码规范
+
+仓库级统一工具链（根目录 `package.json` 仅承载工具链，各应用仍独立安装依赖）：
+
+- **ESLint 10 flat config**（`eslint.config.mjs`）：typescript-eslint 类型感知严格规则
+  （`recommendedTypeChecked`）+ react-hooks / react-refresh，由 eslint-config-prettier 关闭格式冲突规则。
+- **Prettier 3**：printWidth 100 / 单引号 / 尾逗号 / LF。
+- **husky + lint-staged**：`git commit` 时自动对暂存文件执行 `eslint --fix` + `prettier --write`，
+  不合规的代码进不了仓库。
+
+```bash
+npm install          # 根目录首次安装，会自动挂上 pre-commit 钩子
+npm run lint         # 全仓库类型感知 lint
+npm run lint:fix     # 自动修复
+npm run format       # 全仓库格式化
+```
+
+> 注意：根目录的 `typescript@~5.9` 仅供 ESLint parser 做类型感知分析；各应用自带的
+> `typescript@^7` 负责 `tsc --noEmit` 与 IDE 类型检查。两者职责不同，不要合并或互删。
+
 ## 关键设计点
 
 1. **壳负责框架**：菜单、路由映射、登录态、ConfigProvider 主题/语言都在 host；

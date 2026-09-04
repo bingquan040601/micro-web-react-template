@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Common commands
 
-There is no root `package.json`; each app is installed and run independently with `npm --prefix`.
+Apps have no shared runtime root: each app is installed and run independently with `npm --prefix`. The root `package.json` is **lint tooling only** (ESLint + Prettier + husky) — apps do not install from or depend on it.
 
 ```bash
 # install (each app has its own package-lock.json)
@@ -31,7 +31,19 @@ cd remote && npx tsc --noEmit
 cd report && npx tsc --noEmit
 ```
 
-No lint or test scripts are configured in any app.
+Lint/format run from the **root** (ESLint 10 flat config + Prettier 3, type-aware strict rules via typescript-eslint `recommendedTypeChecked`):
+
+```bash
+npm install          # once: also sets up the husky pre-commit hook (lint-staged)
+npm run lint         # type-aware ESLint over all four dirs
+npm run lint:fix
+npm run format       # Prettier write
+npm run format:check
+```
+
+There are deliberately **two TypeScript versions**: apps pin `typescript@^7` (used by `tsc --noEmit` and the IDE); the root pins `typescript@~5.9` solely as the typescript-eslint parser engine, because type-aware linting does not support TS 7's native compiler API. Do not unify or delete either one.
+
+No test scripts are configured in any app.
 
 Open `http://localhost:3100` for the integrated shell. `remote` (:3101) and `report` (:3102) also have standalone preview pages.
 
@@ -47,7 +59,7 @@ Rspack 2.x module-federation admin skeleton: three independent React 19 + TypeSc
 
 Conventions that must be preserved:
 
-- **Async boundary**: every app's `src/index.tsx` contains only `import('./bootstrap')` so the federation runtime can load `remoteEntry.js` and negotiate shared deps before app code runs.
+- **Async boundary**: every app's `src/index.tsx` contains only `void import('./bootstrap')` (the `void` operator explicitly marks the floating promise for the type-aware lint) so the federation runtime can load `remoteEntry.js` and negotiate shared deps before app code runs.
 - **Page-granularity exposes**: remotes expose individual pages, so a menu click lazy-loads only that page's chunk. To add a federated page: add it to the remote's `exposes`, add a `lazy()` import + entry in `PAGES`/`menuItems` in `host/src/App.tsx`, and declare the module in `host/src/declarations.d.ts` (remote modules don't exist at host compile time).
 - **Shared singletons**: `react`, `react-dom`, and `antd` are `singleton: true` in all three configs, so the host's `ConfigProvider` context applies inside remote pages. Shared packages are not tree-shaken — each becomes a full separate chunk.
 - **Remote chunk URLs**: each remote sets `output.publicPath: 'auto'` and sends `Access-Control-Allow-Origin: *`, so chunks are fetched back from whatever origin `remoteEntry.js` was loaded from (never the host's origin). Correspondingly, the host's `remotes` are **promise-based dynamic entries** (`dynamicRemote()` in `host/rspack.config.mjs`) that build the entry URL from `window.location.hostname` — never hardcode `localhost` or a LAN IP, or cross-device access breaks with `#RUNTIME-008`.
