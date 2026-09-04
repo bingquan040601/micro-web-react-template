@@ -19,9 +19,7 @@ const columns = [
   {
     title: '状态',
     dataIndex: 'status',
-    render: (s: User['status']) => (
-      <Tag color={s === '启用' ? 'green' : 'red'}>{s}</Tag>
-    ),
+    render: (s: User['status']) => <Tag color={s === '启用' ? 'green' : 'red'}>{s}</Tag>,
   },
 ];
 

@@ -26,18 +26,18 @@ the script URL is unreachable or the server returned an error (network failure, 
 本仓库当时有两处写死：
 
 1. **host 的 `remotes`**（`host/rspack.config.mjs`）：
-   
+
    ```js
    remote_app: 'remote_app@http://localhost:3101/remoteEntry.js',  // ✗
    report_app: 'report_app@http://localhost:3102/remoteEntry.js',  // ✗
    ```
 
 2. **子应用的 `output.publicPath`**（`remote/`、`report/` 的 rspack.config.mjs）：
-   
+
    ```js
    publicPath: 'http://localhost:3101/',  // ✗
    ```
-   
+
    这层更隐蔽：就算入口地址修好了，`remoteEntry.js` 加载成功后，它再去拉
    页面 chunk 时用的还是 publicPath 拼出的 localhost 地址，一样挂。
 
@@ -100,9 +100,9 @@ output: {
 
 改配置前先问：这个地址最终是**谁的**网络栈去访问？
 
-| 地址用途                                                                   | 求值位置                   | 能不能写 localhost                  |
-| ---------------------------------------------------------------------- | ---------------------- | ------------------------------- |
-| MF `remotes` 入口、`output.publicPath`、前端直连的 API/WebSocket 地址             | **客户端浏览器**             | ✗ 必须跟随 location 或用相对路径          |
+| 地址用途                                                                         | 求值位置                    | 能不能写 localhost                           |
+| -------------------------------------------------------------------------------- | --------------------------- | -------------------------------------------- |
+| MF `remotes` 入口、`output.publicPath`、前端直连的 API/WebSocket 地址            | **客户端浏览器**            | ✗ 必须跟随 location 或用相对路径             |
 | devServer `proxy.target`（如 host 的 `/api` → `localhost:3200`）、SSR/服务端回调 | **dev server / 服务器进程** | ✓ 服务端和 mock 在同一台机器，localhost 正确 |
 
 本仓库 host 的 `/api` 代理之所以局域网下不用改，就是因为代理转发发生在

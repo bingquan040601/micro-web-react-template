@@ -2,12 +2,7 @@ import { lazy, Suspense, useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 import { Avatar, Dropdown, Layout, Menu, Spin } from 'antd';
 import type { MenuProps } from 'antd';
-import {
-  DashboardOutlined,
-  ShoppingOutlined,
-  TeamOutlined,
-  UserOutlined,
-} from '@ant-design/icons';
+import { DashboardOutlined, ShoppingOutlined, TeamOutlined, UserOutlined } from '@ant-design/icons';
 import { fetchMenus } from './api/menu';
 import type { MenuItemData } from './api/menu';
 import './app.less';
