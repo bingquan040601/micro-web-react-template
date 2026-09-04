@@ -10,8 +10,9 @@ export default {
     headers: { 'Access-Control-Allow-Origin': '*' },
   },
   output: {
-    // 必须写绝对地址：remote 的 chunk 被主应用加载时，要回到 3101 端口拉取
-    publicPath: 'http://localhost:3101/',
+    // 'auto'：chunk 地址跟随 remoteEntry.js 的加载源——既保证回到本应用 origin 拉取
+    // （而不是主应用的），又让 localhost / 局域网 IP 两种访问方式都成立
+    publicPath: 'auto',
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.jsx', '.js'],

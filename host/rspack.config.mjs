@@ -1,5 +1,22 @@
 import rspack from '@rspack/core';
 
+// 远程入口跟随当前页面的 hostname：localhost 和局域网 IP 访问都能拿到可达的地址。
+// （静态写死 localhost 时，其他设备访问会把 localhost 解析到它自己身上 → RUNTIME-008）
+const dynamicRemote = (name, port) => `promise new Promise((resolve, reject) => {
+  const url = 'http://' + window.location.hostname + ':${port}/remoteEntry.js';
+  const script = document.createElement('script');
+  script.src = url;
+  script.onload = () => {
+    const container = window.${name};
+    resolve({
+      get: (request) => container.get(request),
+      init: (arg) => { try { return container.init(arg); } catch (e) { console.error(e); } },
+    });
+  };
+  script.onerror = () => reject(new Error('Failed to load remote entry: ' + url));
+  document.head.appendChild(script);
+})`;
+
 /** @type {import('@rspack/core').Configuration} */
 export default {
   entry: './src/index.tsx',
@@ -39,9 +56,9 @@ export default {
     new rspack.container.ModuleFederationPlugin({
       name: 'host',
       remotes: {
-        // 格式：别名: '远程应用名@远程地址/remoteEntry.js'
-        remote_app: 'remote_app@http://localhost:3101/remoteEntry.js',
-        report_app: 'report_app@http://localhost:3102/remoteEntry.js',
+        // 格式：别名: dynamicRemote('远程应用名', 端口)
+        remote_app: dynamicRemote('remote_app', 3101),
+        report_app: dynamicRemote('report_app', 3102),
       },
       shared: {
         react: { singleton: true },

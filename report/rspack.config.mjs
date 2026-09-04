@@ -9,7 +9,8 @@ export default {
     headers: { 'Access-Control-Allow-Origin': '*' },
   },
   output: {
-    publicPath: 'http://localhost:3102/',
+    // 'auto'：chunk 地址跟随 remoteEntry.js 的加载源（见 remote/rspack.config.mjs 注释）
+    publicPath: 'auto',
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.jsx', '.js'],

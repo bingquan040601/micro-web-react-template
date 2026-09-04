@@ -45,7 +45,12 @@ dev server 不会监听配置文件变化，否则会报 `Module "./xxx" does no
 4. **shared 单例**：react / react-dom / antd 三处共享单例，壳的 ConfigProvider
    对远程页面同样生效；注意 shared 的包不做 tree-shaking，会整包打成独立 chunk。
 5. **异步边界**（必须）：入口 `index.tsx` 只写 `import('./bootstrap')`。
-6. **remote 的 `output.publicPath` 必须是绝对地址**，否则 chunk 会从壳的域名下拉取。
+6. **remote 的 `output.publicPath` 用 `'auto'`**，chunk 地址跟随 `remoteEntry.js`
+   的加载源，既不会错从壳的域名拉取，也兼容 localhost / 局域网 IP 访问；
+   配套地，host 的 `remotes` 用 promise 动态入口（`dynamicRemote()`）按
+   `location.hostname` 拼地址，**不要写死 localhost 或局域网 IP**，
+   否则跨设备访问报 `#RUNTIME-008`（详见
+   [docs/module-federation-lan-pitfall.md](docs/module-federation-lan-pitfall.md)）。
 7. **首屏 loading**：两段式。`host/index.html` 的 `#root` 内放纯 HTML 占位
    （logo + 纯 CSS spinner，效果见 boot-loading.png）。占位样式必须**内联且
    完全自包含**——高度、行高、字号、间距全部写死，不继承 body、不依赖
