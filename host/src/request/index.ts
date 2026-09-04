@@ -79,7 +79,12 @@ const pending = new Map<string, AbortController>();
 type TaggedConfig = InternalAxiosRequestConfig & { [PENDING_KEY]?: string };
 
 function buildPendingKey(config: InternalAxiosRequestConfig): string {
-  return [config.method, config.url, JSON.stringify(config.params), JSON.stringify(config.data)].join('&');
+  return [
+    config.method,
+    config.url,
+    JSON.stringify(config.params),
+    JSON.stringify(config.data),
+  ].join('&');
 }
 
 function dropPending(config: TaggedConfig) {
@@ -122,8 +127,10 @@ instance.interceptors.request.use((config) => {
   return cfg;
 });
 
+// 响应拦截器把 AxiosResponse 脱壳成业务 data：运行时返回值不再是 AxiosResponse，
+// 显式 any 是 axios 解包的标准写法，对外类型由下方的 request<T> 泛型兜底
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return */
 instance.interceptors.response.use(
-  // 返回值是脱壳后的 data 而非 AxiosResponse，此处显式 any 是 axios 解包的标准写法
   (response: AxiosResponse): any => {
     dropPending(response.config);
 
@@ -141,7 +148,9 @@ instance.interceptors.response.use(
       toLogin();
       return Promise.reject(new BizError(401, envelope.message || '登录已过期'));
     }
-    return Promise.reject(new BizError(envelope?.code ?? -1, envelope?.message || '服务开小差了，请稍后重试'));
+    return Promise.reject(
+      new BizError(envelope?.code ?? -1, envelope?.message || '服务开小差了，请稍后重试'),
+    );
   },
   (error: AxiosError<ApiEnvelope>) => {
     if (error.config) {
@@ -157,6 +166,7 @@ instance.interceptors.response.use(
     return Promise.reject(normalizeHttpError(error));
   },
 );
+/* eslint-enable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return */
 
 const STATUS_MESSAGE: Record<number, string> = {
   400: '请求参数错误',
@@ -194,7 +204,11 @@ export async function request<T>(config: RequestConfig): Promise<T> {
   }
 }
 
-export function get<T>(url: string, params?: Record<string, unknown>, config?: RequestConfig): Promise<T> {
+export function get<T>(
+  url: string,
+  params?: Record<string, unknown>,
+  config?: RequestConfig,
+): Promise<T> {
   return request<T>({ ...config, method: 'GET', url, params });
 }
 
@@ -206,6 +220,10 @@ export function put<T>(url: string, data?: unknown, config?: RequestConfig): Pro
   return request<T>({ ...config, method: 'PUT', url, data });
 }
 
-export function del<T>(url: string, params?: Record<string, unknown>, config?: RequestConfig): Promise<T> {
+export function del<T>(
+  url: string,
+  params?: Record<string, unknown>,
+  config?: RequestConfig,
+): Promise<T> {
   return request<T>({ ...config, method: 'DELETE', url, params });
 }

@@ -10,7 +10,7 @@ import './styles/global.less'; // 全局 reset：壳应用唯一入口引入
 function ToastBridge() {
   const { message } = AntdApp.useApp();
   useEffect(() => {
-    setErrorToast((content) => message.error(content));
+    setErrorToast((content) => void message.error(content));
   }, [message]);
   return null;
 }

@@ -9,7 +9,7 @@ import './styles/global.less'; // 仅独立运行时生效；被壳集成时 boo
 function ToastBridge() {
   const { message } = AntdApp.useApp();
   useEffect(() => {
-    setErrorToast((content) => message.error(content));
+    setErrorToast((content) => void message.error(content));
   }, [message]);
   return null;
 }
