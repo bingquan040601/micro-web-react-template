@@ -64,7 +64,9 @@ npm run format       # 全仓库格式化
 3. **主子通信**：壳通过 props 下发数据（示例：`Dashboard` 的 `userName`）。
 4. **shared 单例**：react / react-dom / antd 三处共享单例，壳的 ConfigProvider
    对远程页面同样生效；注意 shared 的包不做 tree-shaking，会整包打成独立 chunk。
-5. **异步边界**（必须）：入口 `index.tsx` 只写 `import('./bootstrap')`。
+5. **异步边界**（必须）：入口 `index.tsx` 只写 `void import('./bootstrap')`，
+   让 shared 单例协商先于应用代码执行，否则 react 会被打成本应用私有副本
+   （详见 [docs/module-federation-async-boundary.md](docs/module-federation-async-boundary.md)）。
 6. **remote 的 `output.publicPath` 用 `'auto'`**，chunk 地址跟随 `remoteEntry.js`
    的加载源，既不会错从壳的域名拉取，也兼容 localhost / 局域网 IP 访问；
    配套地，host 的 `remotes` 用 promise 动态入口（`dynamicRemote()`）按
