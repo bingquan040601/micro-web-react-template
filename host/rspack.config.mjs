@@ -23,6 +23,14 @@ export default {
   devServer: {
     port: 3100,
     hot: true,
+    // /api 转发到本地 mock 服务（server/），见 request 层 baseURL
+    proxy: [
+      {
+        context: ['/api'],
+        target: 'http://localhost:3200',
+        changeOrigin: true,
+      },
+    ],
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.jsx', '.js'],

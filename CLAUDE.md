@@ -17,6 +17,9 @@ npm --prefix remote run dev    # :3101
 npm --prefix report run dev    # :3102
 npm --prefix host run dev      # :3100
 
+# mock 服务（菜单等接口，零依赖 node:http）
+npm --prefix server run dev    # :3200
+
 # build
 npm --prefix remote run build
 npm --prefix report run build
