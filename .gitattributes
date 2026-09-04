@@ -1,0 +1,3 @@
+# 统一 LF 行尾：与 .prettierrc.json 的 endOfLine: "lf" 对齐，
+# 避免 Windows 下 core.autocrlf 签出时转成 CRLF 导致 prettier --check 误报
+* text=auto eol=lf
