@@ -1,4 +1,8 @@
 import rspack from '@rspack/core';
+import { codeInspectorPlugin } from 'code-inspector-plugin';
+
+// rspack serve 时 CLI 自动设为 development，build 时为 production
+const isDev = process.env.NODE_ENV !== 'production';
 
 // 远程入口跟随当前页面的 hostname：localhost 和局域网 IP 访问都能拿到可达的地址。
 // （静态写死 localhost 时，其他设备访问会把 localhost 解析到它自己身上 → RUNTIME-008）
@@ -60,6 +64,9 @@ export default {
   },
   plugins: [
     new rspack.HtmlRspackPlugin({ template: './index.html' }),
+    // 页面元素点击跳转源码：Alt+Shift+点击（默认唤起 VS Code，仅开发环境生效。
+    // 三个应用都需开启——远程页面的源码位置属性在各自编译时注入，host 侧统一响应点击）
+    ...(isDev ? [codeInspectorPlugin({ bundler: 'rspack' })] : []),
     // ===== 模块联邦：作为主应用消费远程模块 =====
     new rspack.container.ModuleFederationPlugin({
       name: 'host',

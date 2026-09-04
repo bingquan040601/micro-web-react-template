@@ -1,4 +1,7 @@
 import rspack from '@rspack/core';
+import { codeInspectorPlugin } from 'code-inspector-plugin';
+
+const isDev = process.env.NODE_ENV !== 'production';
 
 /** @type {import('@rspack/core').Configuration} */
 export default {
@@ -42,6 +45,8 @@ export default {
   },
   plugins: [
     new rspack.HtmlRspackPlugin({ template: './index.html' }),
+    // 元素点击跳转源码（仅开发环境；远程页面被 host 消费后，点击落到本应用源码）
+    ...(isDev ? [codeInspectorPlugin({ bundler: 'rspack' })] : []),
     // ===== 模块联邦：作为子应用暴露模块 =====
     new rspack.container.ModuleFederationPlugin({
       name: 'remote_app',

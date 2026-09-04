@@ -1,4 +1,7 @@
 import rspack from '@rspack/core';
+import { codeInspectorPlugin } from 'code-inspector-plugin';
+
+const isDev = process.env.NODE_ENV !== 'production';
 
 /** @type {import('@rspack/core').Configuration} */
 export default {
@@ -40,6 +43,8 @@ export default {
   },
   plugins: [
     new rspack.HtmlRspackPlugin({ template: './index.html' }),
+    // 元素点击跳转源码（仅开发环境）
+    ...(isDev ? [codeInspectorPlugin({ bundler: 'rspack' })] : []),
     // ===== 模块联邦：报表域子应用 =====
     new rspack.container.ModuleFederationPlugin({
       name: 'report_app',
